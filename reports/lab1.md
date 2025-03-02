@@ -6,9 +6,9 @@
 ----
 
 ## Theory
-Finite Automata (FA) and Regular Grammars (RG) are fundamental concepts in Formal Languages and Automata Theory. A **grammar** is a set of rules that generates strings, while an **automaton** is a model that recognizes or accepts strings based on state transitions. Regular grammars can be converted into finite automata, which can determine whether a given input string belongs to a language.
+&ensp;&ensp;&ensp;Finite Automata (FA) and Regular Grammars (RG) are fundamental concepts in Formal Languages and Automata Theory. A **grammar** is a set of rules that generates strings, while an **automaton** is a model that recognizes or accepts strings based on state transitions. Regular grammars can be converted into finite automata, which can determine whether a given input string belongs to a language.
 
-In this implementation, a **Grammar class** is used to define a set of production rules and generate words. The **FiniteAutomaton class** converts a grammar into a deterministic finite automaton (DFA) and validates strings against the defined language.
+&ensp;&ensp;&ensp;In this implementation, a **Grammar class** is used to define a set of production rules and generate words. The **FiniteAutomaton class** converts a grammar into a deterministic finite automaton (DFA) and validates strings against the defined language.
 
 ## Objectives
 
@@ -20,7 +20,7 @@ In this implementation, a **Grammar class** is used to define a set of productio
 ## Implementation Description
 
 ### **1. Grammar Class**
-The `Grammar` class represents a formal language with non-terminals, terminals, production rules, and a starting symbol. It provides methods for generating valid words.
+&ensp;&ensp;&ensp;The `Grammar` class represents a formal language with non-terminals, terminals, production rules, and a starting symbol. It provides methods for generating valid words.
 
 #### **Key Methods:**
 - `generate_string()`: Recursively replaces non-terminals with productions until a terminal string is formed.
@@ -37,7 +37,7 @@ class Grammar:
 ```
 
 ### **2. Finite Automaton Class**
-The `FiniteAutomaton` class converts a given grammar into a deterministic finite automaton (DFA). It maintains states, transitions, and alphabet rules for recognizing words.
+&ensp;&ensp;&ensp;The `FiniteAutomaton` class converts a given grammar into a deterministic finite automaton (DFA). It maintains states, transitions, and alphabet rules for recognizing words.
 
 #### **Key Methods:**
 - `grammar_to_DFA()`: Converts grammar rules into a transition table.
@@ -56,7 +56,7 @@ class FiniteAutomaton:
 ```
 
 ### **3. Main Script**
-The `main.py` script demonstrates the functionality by:
+&ensp;&ensp;&ensp;The `main.py` script demonstrates the functionality by:
 - Creating a `Grammar` instance with predefined rules.
 - Generating and printing valid words from the grammar.
 - Converting the grammar into a DFA.
@@ -73,13 +73,7 @@ for i, word in enumerate(generated_strings, 1):
 
 ## Conclusions / Results
 
-The implementation successfully demonstrates:
-- The generation of valid words based on regular grammar rules.
-- The conversion of grammar into a finite automaton.
-- The ability to check whether a string is accepted by the automaton.
-
-The project meets all the objectives and can be expanded with additional features, such as visualization of the finite automaton’s state transitions.
-
+&ensp;&ensp;&ensp;This project successfully demonstrates the core principles of formal languages and finite automata by implementing a Grammar class that generates valid strings and a Finite Automaton class that verifies whether a given string belongs to the language. The system effectively converts a regular grammar into a deterministic finite automaton, ensuring correct state transitions and validation processes. The results confirm that the automaton correctly distinguishes between valid and invalid strings based on the defined grammar rules. This implementation provides a solid foundation for further improvements, such as visualization of state transitions or support for more complex language recognition tasks. 
 ## References
 1. [Video: Introduction to Finite Automata](https://www.youtube.com/watch?v=9syvZr-9xwk)
 2. [University Course on Formal Languages](https://else.fcim.utm.md/course/view.php?id=98)
