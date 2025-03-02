@@ -1,6 +1,6 @@
 
-from Lab1.src.grammar import Grammar
-from Lab1.src.finite_automation import FiniteAutomaton
+from src.grammar import Grammar
+from src.finite_automation import FiniteAutomaton
 
 
 grammar_rules = {
@@ -10,7 +10,7 @@ grammar_rules = {
 }
 
 grammar_instance = Grammar(['S', 'B', 'D'], ['a', 'b', 'c', 'd'], grammar_rules, 'S')
-
+print("Lab1:")
 # 5 valid strings from the grammar
 print("Generated Strings:")
 generated_strings = grammar_instance.generate_words()
