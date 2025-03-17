@@ -10,6 +10,8 @@ The term **lexer** comes from *lexical analysis*, which represents the process o
 
 Tokens are identified based on predefined rules of a language, and the output of the lexer is known as *lexemes*. Lexemes represent sequences of characters that match a particular pattern. These lexemes are then assigned meaningful categories as *tokens*. Tokens categorize lexemes rather than storing their exact value.
 
+I choose _SQL_ for this lexer implementation because it is one of the most widely used languages for managing and querying databases. SQL queries have a structured and well-defined syntax, making them ideal for tokenization. A lexer for SQL queries is essential for building SQL parsers, query optimizers, and database engines, as it allows structured decomposition of input queries into meaningful components. Additionally, SQL queries contain a variety of elements, such as `keywords`, `identifiers`, `operators`, `numbers`, and `strings`, which provide a rich environment for demonstrating lexical analysis.
+
 ---
 
 ## Objectives
@@ -21,6 +23,8 @@ Tokens are identified based on predefined rules of a language, and the output of
 
 ## Implementation Description
 This implementation focuses on an SQL lexer that recognizes and tokenizes SQL statements. The lexer can identify various SQL components, including keywords, identifiers, operators, numbers, strings, delimiters, whitespace, and comments. 
+
+To implement this lexer, **regular expressions** (regex) were used because they provide an efficient and precise way to define patterns for various SQL tokens. Regex allows quick pattern matching and classification of `keywords`, `identifiers`, `numbers`, `operators`, and other SQL components, significantly simplifying the lexing process. Instead of manually writing complex string-parsing logic, regex allows for concise, readable, and high-performance tokenization, making it the most convenient method for implementing a lexer. It ensures accuracy, flexibility, and ease of maintenance when extending the lexer to support additional SQL features.
 
 ### Lexer Implementation
 The lexer consists of several core components:
@@ -62,28 +66,10 @@ TOKEN_PATTERNS = [
 ```
 
 #### 4. Implementing the Lexer Function
-This function iterates through the input string, matches tokens, and classifies them.
-```python
-def sql_lexer(query):
-    tokens = []
-    while query:
-        match = None
-        for token_type, pattern, keyword_set in TOKEN_PATTERNS:
-            regex = re.compile(pattern, re.IGNORECASE)
-            match = regex.match(query)
-            if match:
-                value = match.group(0)
-                if token_type == TokenType.KEYWORD and value.upper() not in SQL_KEYWORDS:
-                    token_type = TokenType.IDENTIFIER
-                if token_type != TokenType.WHITESPACE:
-                    tokens.append((token_type, value))
-                query = query[len(value):]
-                break
-        if not match:
-            tokens.append((TokenType.UNKNOWN, query[0]))
-            query = query[1:]
-    return tokens
-```
+The lexer function takes an input string (SQL query) and processes it token by token. It starts by initializing an empty list to store the extracted tokens. 
+The function then iterates through the input query character by character, attempting to match substrings against predefined regular expressions representing different token types. When a match is found, the function assigns the corresponding token type based on the pattern and appends it to the list of tokens. 
+Whitespace tokens are ignored to avoid unnecessary processing. After identifying a token, the function moves forward in the input string by removing the matched portion. If an unknown character is encountered, it is assigned an `UNKNOWN` token type. 
+Finally, the function returns the structured list of tokens, which represents the parsed SQL query ready for further processing, such as syntax analysis or query execution.
 
 ---
 
