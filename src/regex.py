@@ -1,73 +1,110 @@
 import random
+import re
+from typing import List, Tuple
 
-def repeat(symbols, times):
-    return ''.join(random.choice(symbols) for _ in range(times))
 
-def bounded_repeat(symbols, min_count, max_count):
-    count = random.randint(min_count, max_count)
-    return repeat(symbols, count), count
+def generate_from_regex(regex: str) -> str:
+    """
+    Generate a valid string from a regular expression pattern.
+    Handles:
+    - M? : M is optional
+    - N{2} : exactly 2 N's
+    - (O|P){3} : exactly 3 of either O or P
+    - O* : 0 to 5 O's (limited)
+    - R+ : 1 to 5 R's (limited)
+    - (X|Y|Z){3} : exactly 3 of X, Y, or Z
+    - 8+ : 1 to 5 8's (limited)
+    - (9|O){2} : exactly 2 of 9 or O
+    - (H|I) : exactly 1 of H or I
+    - L* : 0 to 5 L's (limited)
+    - N? : N is optional
+    """
+    result = []
+    processing_steps = []
 
-def generate_with_steps():
-    steps = []
-    result = ""
+    # Process the regex pattern
+    i = 0
+    n = len(regex)
 
-    # M?
-    m_char = random.choice(['', 'M'])
-    result += m_char
-    steps.append(f"Added 'M' {'once' if m_char else '0 times'}")
+    while i < n:
+        char = regex[i]
+        processing_steps.append(f"Processing position {i}: '{char}'")
 
-    # N{2}
-    result += 'NN'
-    steps.append("Added 'N' exactly 2 times")
+        if char == '?':  # Optional preceding character
+            if random.choice([True, False]):
+                result.append(result.pop())  # Keep the last character
+            else:
+                result.pop()  # Remove the last character
+            i += 1
 
-    # (O|P){3}
-    op_part = repeat(['O', 'P'], 3)
-    result += op_part
-    steps.append(f"Added 3 characters from (O|P): '{op_part}'")
+        elif char == '{':  # Quantifier
+            # Find the closing brace
+            j = regex.find('}', i)
+            if j == -1:
+                raise ValueError("Unclosed brace in regex")
+            quantifier = regex[i + 1:j]
 
-    # O*
-    o_part, o_count = bounded_repeat(['O'], 0, 5)
-    result += o_part
-    steps.append(f"Added 'O' {o_count} times for O*")
+            if '|' in result[-1]:  # Handle alternation group
+                group = result.pop()
+                choices = group[1:-1].split('|')
+                count = int(quantifier)
+                selected = random.choices(choices, k=count)
+                result.extend(selected)
+            else:  # Simple repetition
+                char_to_repeat = result.pop()
+                count = int(quantifier)
+                result.extend([char_to_repeat] * count)
+            i = j + 1
 
-    # R+
-    r_part, r_count = bounded_repeat(['R'], 1, 5)
-    result += r_part
-    steps.append(f"Added 'R' {r_count} times for R+")
+        elif char == '(':  # Group start
+            # Find the closing parenthesis
+            j = regex.find(')', i)
+            if j == -1:
+                raise ValueError("Unclosed parenthesis in regex")
+            group = regex[i:j + 1]
+            result.append(group)
+            i = j + 1
 
-    # (X|Y|Z){3}
-    xyz_part = repeat(['X', 'Y', 'Z'], 3)
-    result += xyz_part
-    steps.append(f"Added 3 characters from (X|Y|Z): '{xyz_part}'")
+        elif char == '|':  # Part of alternation (handled in group processing)
+            i += 1
 
-    # 8+
-    eight_part, eight_count = bounded_repeat(['8'], 1, 5)
-    result += eight_part
-    steps.append(f"Added '8' {eight_count} times for 8+")
+        elif char == '*':  # 0 to 5 repetitions
+            char_to_repeat = result.pop()
+            count = random.randint(0, 5)
+            result.extend([char_to_repeat] * count)
+            i += 1
 
-    # (9|O){2}
-    nine_o_part = repeat(['9', 'O'], 2)
-    result += nine_o_part
-    steps.append(f"Added 2 characters from (9|O): '{nine_o_part}'")
+        elif char == '+':  # 1 to 5 repetitions
+            char_to_repeat = result.pop()
+            count = random.randint(1, 5)
+            result.extend([char_to_repeat] * count)
+            i += 1
 
-    # (H|I)
-    hi_char = random.choice(['H', 'I'])
-    result += hi_char
-    steps.append(f"Added one character from (H|I): '{hi_char}'")
+        else:  # Literal character
+            result.append(char)
+            i += 1
 
-    # (J|K)
-    jk_char = random.choice(['J', 'K'])
-    result += jk_char
-    steps.append(f"Added one character from (J|K): '{jk_char}'")
+    processing_steps.append("Final result construction")
+    return ''.join(result), processing_steps
 
-    # L*
-    l_part, l_count = bounded_repeat(['L'], 0, 5)
-    result += l_part
-    steps.append(f"Added 'L' {l_count} times for L*")
 
-    # N?
-    n_char = random.choice(['', 'N'])
-    result += n_char
-    steps.append(f"Added 'N' {'once' if n_char else '0 times'} for N?")
+# Variant patterns
+patterns = [
+    "M?N{2}(O|P){3}O*R+",
+    "(X|Y|Z){3}8+(9|O){2}",
+    "(H|I)(J|K)L*N?"
+]
 
-    return result, steps
+# Generate examples for each pattern
+for pattern in patterns:
+    print(f"\nGenerating strings for pattern: {pattern}")
+    for _ in range(3):  # Generate 3 examples per pattern
+        result, steps = generate_from_regex(pattern)
+        print(f"  Example: {result}")
+
+    # Show processing steps for one generation
+    print("\nProcessing steps example:")
+    result, steps = generate_from_regex(pattern)
+    for step in steps:
+        print(f"  {step}")
+    print(f"  Final result: {result}")
