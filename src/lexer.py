@@ -48,8 +48,3 @@ def sql_lexer(query):
             query = query[1:]  # skip unknown character
     return tokens
 
-# Test the SQL lexer
-# query = "SELECT name, age FROM users WHERE age > 21;"
-# tokens = sql_lexer(query)
-# for token in tokens:
-#     print(token)
